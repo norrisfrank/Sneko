@@ -2,6 +2,9 @@
 
 A classic Snake game implementation featuring an autonomous agent that learns to play using Reinforcement Learning. This project demonstrates the fundamentals of Deep Q Learning by training a neural network to master the game from scratch.
 
+## Live Demo
+
+Play the live version here: https://sneko-rdgh.onrender.com
 ## Overview
 
 This project consists of two primary components:
