@@ -1,0 +1,236 @@
+<!doctype html>
+<html lang="en" data-theme="dark">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="/vite.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>AURA // Sneko Revamp</title>
+
+    <!-- Fonts (from SSO Login) -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&family=Space+Grotesk:wght@300;400;500;600&display=swap" rel="stylesheet" />
+
+    <!-- Icons -->
+    <script src="https://unpkg.com/@phosphor-icons/web"></script>
+    
+    <!-- Three.js for background -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r134/three.min.js"></script>
+
+    <link rel="stylesheet" href="./style.css" />
+  </head>
+
+  <body>
+    <!-- WebGL Background -->
+    <div id="webgl-container"></div>
+
+    <!-- Tech Labels -->
+    <div class="tech-label label-vertical-right">
+        <span>CREATED AND DESIGNED BY NORRIS FRANK</span>
+    </div>
+
+    <!-- Main Layout -->
+    <div class="layout-grid">
+      <!-- TELEMETRY PANEL -->
+      <aside id="telemetry-panel" class="auth-panel">
+        <div class="header-group">
+            <h1 id="navLogo" style="cursor:pointer;">Sneko</h1>
+            <p class="subtitle">Neural network telemetry & game control.</p>
+            
+            <nav class="nav-links" style="margin-top: 12px; flex-wrap: wrap;">
+              <a href="#" id="navHowTo">How to play</a>
+              <a href="#" id="navLeaderboard">Leaderboard</a>
+              <a href="#" id="navAbout">About</a>
+              <a href="#" id="navPlayBtn" style="color: var(--shader-fringe); font-weight: 600;"><i class="ph-fill ph-play"></i> Play Now</a>
+            </nav>
+        </div>
+
+        <div class="sso-divider">01 // NEURAL SYNC</div>
+        
+        <div class="data-grid">
+          <div class="data-row">
+            <span class="label">LATENCY</span>
+            <span class="val">0.004ms</span>
+          </div>
+          <div class="data-row">
+            <span class="label">LOSS</span>
+            <span class="val">0.000%</span>
+          </div>
+        </div>
+        <div class="matrix-bar" id="sync-matrix">██████████████░░</div>
+
+        <div class="sso-divider">02 // GAME CONTROL</div>
+
+        <div class="data-grid">
+          <div>
+            <div class="mono-micro">MODE</div>
+            <div class="mono-value" id="modeValue">HUMAN</div>
+          </div>
+          <div>
+            <div class="mono-micro">SCORE</div>
+            <div class="mono-value" id="scoreValueWrap"><span id="scoreValue">0</span></div>
+          </div>
+        </div>
+
+        <div class="form-group" style="margin-top: 8px;">
+          <div class="mono-micro" style="margin-bottom: 8px;">AI CONTROL</div>
+          <div class="ai-toggle-shell">
+            <span class="ai-label">Human</span>
+            <label class="switch">
+              <input type="checkbox" id="aiToggle" />
+              <span class="slider round"></span>
+            </label>
+            <span class="ai-label">AI Agent</span>
+          </div>
+        </div>
+
+        <!-- Telemetry Data Area -->
+        <div id="techArea" style="display: none; flex-direction: column; gap: var(--space-md); margin-top: var(--space-sm);">
+          <div class="sso-divider">
+            03 // TELEMETRY <span class="blink" id="telemetryStatus" style="margin-left:auto;color:var(--text-tech);">LIVE</span>
+          </div>
+
+          <div class="tech-grid">
+            <div class="stat-card">
+              <span class="stat-label">Games</span>
+              <span class="stat-value" id="gamesPlayed">0</span>
+            </div>
+            <div class="stat-card">
+              <span class="stat-label">Best</span>
+              <span class="stat-value" id="highScore">0</span>
+            </div>
+            <div class="stat-card">
+              <span class="stat-label">Frames</span>
+              <span class="stat-value" id="framesSurvived">0</span>
+            </div>
+            <div class="stat-card">
+              <span class="stat-label">Epsilon</span>
+              <span class="stat-value" id="epsilonValue">80</span>
+            </div>
+            <div class="stat-card">
+              <span class="stat-label">Reward</span>
+              <span class="stat-value" id="rewardValue">0</span>
+            </div>
+            <div class="stat-card">
+              <span class="stat-label">Memory</span>
+              <span class="stat-value" id="memorySize">0</span>
+            </div>
+          </div>
+
+          <div class="data-row">
+            <span class="stat-label">Training Loss (MSE):</span>
+            <span class="stat-value" id="trainingLoss">0.000</span>
+          </div>
+
+          <div>
+            <span class="stat-label">State Vector [11]:</span>
+            <div class="state-vector" id="stateVector">[0,0,0,0,0,0,0,0,0,0,0]</div>
+          </div>
+
+          <div>
+            <span class="stat-label">Q-Values:</span>
+            <div class="q-grid">
+              <div class="q-col">
+                <span>Str</span><span class="q-val" id="qValStraight">0.00</span>
+              </div>
+              <div class="q-col">
+                <span>Rgt</span><span class="q-val" id="qValRight">0.00</span>
+              </div>
+              <div class="q-col">
+                <span>Lft</span><span class="q-val" id="qValLeft">0.00</span>
+              </div>
+            </div>
+          </div>
+
+          <div style="text-align:center;">
+            <span class="stat-label">Action:</span>
+            <div class="action-val" id="actionValue">Straight</div>
+          </div>
+        </div>
+
+        <div style="flex-grow: 1;"></div>
+        
+        <div class="mono-micro" style="opacity: 0.5;">
+          AUTHORIZED PERSONNEL ONLY<br/>
+          BUILT BY NORRIS FRANK
+        </div>
+      </aside>
+
+      <!-- ARENA -->
+      <main id="arena" class="arena-wrapper">
+        <canvas id="gameCanvas" width="1000" height="800"></canvas>
+
+        <!-- Navigation moved to telemetry panel -->
+
+        <!-- Sections -->
+        <section class="page-section hero" id="heroSection">
+          <div class="hud-title">
+            <div class="system-badge">PLAY SEQUENCE</div>
+            <h1 class="hero-title">You Grew Up. Snake<br />Didn't.</h1>
+            <p class="subtitle" style="text-align:center; max-width: 400px; margin-top: 16px;">
+              Before battle passes and cinematic cutscenes, there was Snake. No fluff—just the grid.
+            </p>
+          </div>
+          <button class="btn-primary" id="heroPlayBtn" style="width: auto; padding: 0 48px;">
+            INITIALIZE <i class="ph ph-arrow-right"></i>
+          </button>
+        </section>
+
+        <section class="page-section game-section" id="gameSection" style="display: none;">
+          <div class="game-instructions hud-bottom">
+            <p id="instructionText">Use <strong>Arrow Keys</strong> to move.</p>
+          </div>
+        </section>
+
+        <section class="page-section content-section" id="howToSection" style="display: none;">
+          <div class="auth-panel" style="max-width: 600px;">
+            <h2>How to Play</h2>
+            <div class="content-section-block">
+              <h3>Human Mode</h3>
+              <p class="subtitle">Use the <strong>Arrow Keys</strong> to maneuver the snake. Eat food to grow. Don't crash.</p>
+            </div>
+            <div class="sso-divider">OR</div>
+            <div class="content-section-block">
+              <h3>AI Agent Mode</h3>
+              <p class="subtitle">Toggle the AI Agent switch to watch the Neural Network learn via Deep Q-Learning in real-time.</p>
+            </div>
+          </div>
+        </section>
+
+        <section class="page-section content-section" id="leaderboardSection" style="display: none;">
+          <div class="auth-panel" style="max-width: 600px; width: 100%;">
+            <h2>Leaderboard</h2>
+            <table class="leaderboard-table">
+              <thead>
+                <tr>
+                  <th>Rank</th>
+                  <th>Mode</th>
+                  <th>Score</th>
+                  <th>Date</th>
+                </tr>
+              </thead>
+              <tbody id="leaderboardBody"></tbody>
+            </table>
+          </div>
+        </section>
+
+        <section class="page-section content-section" id="aboutSection" style="display: none;">
+          <div class="auth-panel" style="max-width: 600px;">
+            <h2>About Sneko</h2>
+            <p class="subtitle">
+              A modern reimagining of the classic Snake game featuring a real-time TensorFlow.js Neural Network.
+            </p>
+            <div class="creator-badge" style="margin-top:24px;">
+              <span class="stat-label">Created By</span>
+              <span style="font-size: 24px; font-weight: 600;">Norris Frank</span>
+            </div>
+          </div>
+        </section>
+      </main>
+    </div>
+
+    <!-- Scripts -->
+    <script src="/background.js"></script>
+    <script type="module" src="/main.js"></script>
+  </body>
+</html>
